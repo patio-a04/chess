@@ -58,7 +58,7 @@ public class Game {
             for (int col = 0; col < 8; col++) {
                 Color color = ((row + col) % 2 == 0) ? lightSquare : darkSquare;
                 PieceButton piece = new PieceButton();
-                PieceListener pieceListener = new PieceListener();
+                pieceListener pieceListener = new pieceListener();
 
                 // White
                 if (row == 0 || row == 1) {
@@ -123,7 +123,8 @@ public class Game {
                 piece.setSquareColor(color);
                 piece.setOpaque(true);
                 piece.setBorder(null);
-                piece.addActionListener(pieceListener);
+                piece.addMouseListener(pieceListener);
+                piece.addMouseMotionListener(pieceListener);
                 piece.setBackground(color);
                 frame.add(piece);
             }
@@ -212,141 +213,50 @@ public class Game {
 
     }
 
-    public class PieceListener implements ActionListener {
+    public class pieceListener implements MouseListener, MouseMotionListener {
+
+        public void mousePressed(MouseEvent e) {
+            int currentX = e.getX();
+            int currentY = e.getY();
+
+            
+        }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
-            // TODO Auto-generated method stub
-            PieceButton buttonClicked = (PieceButton) e.getSource();
-            Color darkSquare = new Color(118, 150, 86);
-            Color lightSquare = new Color(238, 238, 210);
-            Color canMoveToSquare = new Color(255, 137, 115);
-            Color selectedSquare = new Color(255, 234, 181);
+        public void mouseReleased(MouseEvent e) {
+            Piece currentPiece = (Piece) frame.getComponentAt(new Point(e.getX(), e.getY()));
 
-
-            if (buttonClicked.getSquareColor().equals(lightSquare)
-                    || buttonClicked.getSquareColor().equals(darkSquare)) {
-                buttonClicked.setSquareColor(selectedSquare);
-                String pieceType = buttonClicked.getPieceType();
-                String pieceColor = buttonClicked.getPieceColor();
-
-                try {
-                    switch (pieceType) {
-
-                        case "Pawn":
-                            Pawn tempPawn = new Pawn(pieceType, buttonClicked.getRow(), buttonClicked.getCol(),
-                                    pieceColor,
-                                    buttonClicked.getPieceImage(), false);
-                            for (int i = 0; i < 8; i++) {
-                                for (int j = 0; j < 8; j++) {
-                                    if (tempPawn.canMove(i, j)) {
-                                        // Color in the squares which it can move orange
-                                        Component tempPieceButton = frame.getComponentAt(i, j);
-                                        tempPieceButton.setBackground(canMoveToSquare);
-                                        frame.remove(frame.getComponentAt(i, j));
-                                        // frame.add(tempPieceButton, i);
-                                        break;
-                                    }
-                                }
-                            }
-                        case "Knight":
-                            Knight tempKnight = new Knight(pieceType, buttonClicked.getRow(), buttonClicked.getCol(),
-                                    pieceColor,
-                                    buttonClicked.getPieceImage());
-                            for (int i = 0; i < 8; i++) {
-                                for (int j = 0; j < 8; j++) {
-                                    if (tempKnight.canMove(i, j)) {
-                                        // Color in the squares which it can move orange
-                                        Component tempPieceButton = frame.getComponentAt(i, j);
-                                        tempPieceButton.setBackground(canMoveToSquare);
-                                        break;
-                                    }
-                                }
-                            }
-                        case "Bishop":
-                            Bishop tempBishop = new Bishop(pieceType, buttonClicked.getRow(), buttonClicked.getCol(),
-                                    pieceColor,
-                                    buttonClicked.getPieceImage());
-                            for (int i = 0; i < 8; i++) {
-                                for (int j = 0; j < 8; j++) {
-                                    if (tempBishop.canMove(i, j)) {
-                                        // Color in the squares which it can move orange
-                                        Component tempPieceButton = frame.getComponentAt(i, j);
-                                        tempPieceButton.setBackground(canMoveToSquare);
-                                        break;
-                                    }
-                                }
-                            }
-                        case "Rook":
-                            Rook tempRook = new Rook(pieceType, buttonClicked.getRow(), buttonClicked.getCol(),
-                                    pieceColor,
-                                    buttonClicked.getPieceImage());
-                            for (int i = 0; i < 8; i++) {
-                                for (int j = 0; j < 8; j++) {
-                                    if (tempRook.canMove(i, j)) {
-                                        // Color in the squares which it can move orange
-                                        Component tempPieceButton = frame.getComponentAt(i, j);
-                                        tempPieceButton.setBackground(canMoveToSquare);
-                                        break;
-                                    }
-                                }
-                            }
-                        case "Queen":
-                            Queen tempQueen = new Queen(pieceType, buttonClicked.getRow(), buttonClicked.getCol(),
-                                    pieceColor,
-                                    buttonClicked.getPieceImage());
-                            for (int i = 0; i < 7; i++) {
-                                for (int j = 0; j < 7; j++) {
-                                    if (tempQueen.canMove(i, j)) {
-                                        // Color in the squares which it can move orange
-                                        Component tempPieceButton = frame.getComponentAt(i, j);
-                                        tempPieceButton.setBackground(canMoveToSquare);
-                                        break;
-                                    }
-                                }
-                            }
-                        case "King":
-                            King tempKing = new King(pieceType, buttonClicked.getRow(), buttonClicked.getCol(),
-                                    pieceColor,
-                                    buttonClicked.getPieceImage());
-                            for (int i = 0; i < 8; i++) {
-                                for (int j = 0; j < 8; j++) {
-                                    if (tempKing.canMove(i, j)) {
-                                        // Color in the squares which it can move orange
-                                        Component tempPieceButton = frame.getComponentAt(i, j);
-                                        tempPieceButton.setBackground(canMoveToSquare);
-                                        break;
-                                    }
-                                }
-                            }
-                    }
-                    frame.repaint();
-                } catch (java.lang.NullPointerException a) {
-                    // TODO: handle exception
-
-                }
-                // Moves the piece to the selected square
-                if (buttonClicked.getSquareColor().equals(canMoveToSquare)) {
-
-                    Color color = ((buttonClicked.getRow() + buttonClicked.getCol()) % 2 == 0) ? lightSquare
-                            : darkSquare;
-                    buttonClicked.setSquareColor(color);
-
-                    Board boardObject = new Board();
-                    Piece[][] chessBoard = boardObject.getChessBoard();
-                    ArrayList<Piece> wPieces = boardObject.getWhitePieces();
-                    ArrayList<Piece> bPieces = boardObject.getBlackPieces();
-
-                    Piece tempPiece = new Piece(buttonClicked.getPieceType(), buttonClicked.getRow(),
-                            buttonClicked.getCol(), buttonClicked.getPieceColor(), buttonClicked.getIcon());
-                    System.out.println("Square");
-
-                }
+            if(currentPiece.getPieceType() != null)
+            {
+                
             }
         }
 
-        public static void main(String[] args) {
-            Game x = new Game();
+        @Override
+        public void mouseDragged(MouseEvent e) {
+
         }
+
+        // Irrelevant methods, do nothing for these mouse behaviors
+        @Override
+        public void mouseMoved(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+        }
+
+    }
+
+    public static void main(String[] args) {
+        Game x = new Game();
     }
 }
